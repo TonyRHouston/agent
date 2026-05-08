@@ -1,0 +1,43 @@
+Progress Chronicle (sanitized)
+Date: 2026-05-08
+
+Summary
+- Removed Telegram plugin usage from runtime config and plugin allowlist flow.
+- Tuned Google Chat plugin setup and moved secrets handling to Secret Manager-backed refs.
+- Added explicit plugin allowlist and eliminated duplicate Telegram load-path warnings.
+- Investigated startup diagnostics, cron payload errors, websocket reconnect behavior, and model timeout symptoms.
+- Built and deployed a hosted OAuth-protected `/chat` channel for flashpointvr.com with OpenClaw relay wiring.
+
+OpenClaw/Gateway work
+- Updated `~/.openclaw/openclaw.json` to remove Telegram-specific entries and stale plugin load paths.
+- Set explicit trusted plugin allowlist to avoid auto-load warnings.
+- Added exec-based GSM resolver for Google Chat service account secret retrieval.
+- Confirmed benign websocket `1013 gateway starting` startup race.
+- Addressed unsupported Control UI setting edits by writing config directly.
+- Disabled Google Chat plugin when requested and re-enabled targeted behavior later as needed.
+
+Flashpoint website work
+- Located and cloned `TonyRHouston/flashpoint-website`.
+- Implemented Google OAuth-protected chat page and server routes:
+  - `/chat`
+  - `/api/chat/config`
+  - `/api/auth/google`
+  - `/api/auth/logout`
+  - `/api/chat/send`
+- Added Cloud Run + GSM deployment wiring for chat/session/webhook secrets.
+- Hid `/chat` from public homepage navigation (dev-only direct URL access).
+- Restricted OAuth access to a single account (`tonhousto@gmail.com`).
+- Deployed Cloud Run revisions and verified live config endpoint output.
+
+Infrastructure and secrets
+- Created/updated GSM secrets for:
+  - session secret
+  - OpenClaw webhook URL
+  - OpenClaw bearer token
+- Applied Secret Manager accessor IAM bindings for Cloud Run runtime account.
+- Diagnosed and corrected service/runtime mismatch (`2026.4.25` vs `2026.5.7`) in systemd gateway unit path.
+
+Status at handoff
+- Flashpoint chat page is deployed and OAuth-configured with a valid web client ID.
+- Chat is hidden from nav and intended for direct dev access only.
+- Agent repo contains substantial unrelated pending changes; this note is intentionally isolated as a standalone chronicle artifact.
